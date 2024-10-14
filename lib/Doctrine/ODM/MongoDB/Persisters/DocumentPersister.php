@@ -61,7 +61,6 @@ use function is_array;
 use function is_object;
 use function is_scalar;
 use function is_string;
-use function spl_object_hash;
 use function sprintf;
 use function strpos;
 use function strtolower;
@@ -144,7 +143,7 @@ final class DocumentPersister
 
     public function isQueuedForInsert(object $document): bool
     {
-        return isset($this->queuedInserts[spl_object_hash($document)]);
+        return isset($this->queuedInserts[UnitOfWork::getUniqueId($document)]);
     }
 
     /**
@@ -153,7 +152,7 @@ final class DocumentPersister
      */
     public function addInsert(object $document): void
     {
-        $this->queuedInserts[spl_object_hash($document)] = $document;
+        $this->queuedInserts[UnitOfWork::getUniqueId($document)] = $document;
     }
 
     /** @return array<string, object> */
@@ -164,7 +163,7 @@ final class DocumentPersister
 
     public function isQueuedForUpsert(object $document): bool
     {
-        return isset($this->queuedUpserts[spl_object_hash($document)]);
+        return isset($this->queuedUpserts[UnitOfWork::getUniqueId($document)]);
     }
 
     /**
@@ -173,7 +172,7 @@ final class DocumentPersister
      */
     public function addUpsert(object $document): void
     {
-        $this->queuedUpserts[spl_object_hash($document)] = $document;
+        $this->queuedUpserts[UnitOfWork::getUniqueId($document)] = $document;
     }
 
     /**
